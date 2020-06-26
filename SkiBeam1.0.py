@@ -42,6 +42,8 @@ p2 = Pylon(1440, 0, 50, 0)
 
 clock = pygame.time.Clock()
 
+circles = []
+
 key_pressed = True
 random_active = False
 
@@ -107,10 +109,16 @@ while run:
 
     if p2.y > 1280:
         p2.y = 0
-    
+
     win.fill((255, 255, 255))
+    
+    circle1 = pygame.draw.circle(win, (255, 255, 255), (p1.x, p1.y), p1.w, p1.h)
+    circle2 = pygame.draw.circle(win, (255, 255, 255), (p1.x, p1.y), p1.w, p1.h)
+    circles.append(circle1)
+    circles.append(circle2)
+    
     pygame.draw.circle(win, (255, 0, 0), (p1.x, p1.y), p1.w, p1.h)
     pygame.draw.circle(win, (255, 0, 0), (p2.x, p2.y), p2.w, p2.h)
-    pygame.display.update()
+    pygame.display.update(circles)
 
 pygame.quit()
