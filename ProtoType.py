@@ -1,6 +1,7 @@
 # Import Modules
 import os
 import pygame
+import random
 from pygame.locals import *
 from pygame.compat import geterror
 
@@ -55,6 +56,12 @@ class Circle():
 
     def start_random(self):
         self.random = True
+        self.set_random()
+
+    def set_random(self):
+        self.x = random.randint(0, 780)
+        temp_y = random.randint(0, 600)
+        self.y = temp_y * -1
 
     def set_slalom(self):
         if self.slalom > 2:
@@ -159,11 +166,11 @@ def main():
             
             elif event.key == pygame.K_RIGHT and key_pressed:
                 for i in allsprites:
-                    i.extra_clean_on()
-                    if i.is_left:
-                        i.narrow_down()
-                    else:
-                        i.widen_up()
+                    i.start_random()
+
+                screen.fill((255, 255, 255))
+                pygame.display.update()
+                
                 key_pressed = False
 
             elif event.key == pygame.K_a and key_pressed:
@@ -178,7 +185,7 @@ def main():
         #allsprites.update()
 
         # Draw Everything
-        for i in allsprites:
+        for i in allsprites[:]:
             pygame.draw.rect(screen, (255, 255, 255), (i.x, i.clean_y(), i.w, i.h))
             updatedirty = pygame.Rect((i.x, i.clean_y(), i.w, i.h))
             pygame.draw.rect(screen, (255, 0, 0), (i.x, i.y, i.w, i.h))
@@ -189,10 +196,16 @@ def main():
 
             if i.extra_clean:
                 i.extra_clean_off()
+
+            if i.random:
+                if (len(allsprites) < 8):
+                    circle = Circle(0)
+                    circle.start_random()
+                    allsprites.append(circle)
             
             if i.y > 600:
                 if i.random:
-                    return
+                    allsprites.remove(i)
 
                 else:
                     i.y = -40
