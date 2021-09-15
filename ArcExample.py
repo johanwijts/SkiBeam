@@ -1,7 +1,7 @@
 import pygame
 import sys
-
-#Make a loop where the PI ( Angle of the arc ) constantly gets updated, like a crawling snake
+from pygame.locals import *
+from pygame.compat import geterror
 
 pi = 3.14
 
@@ -15,24 +15,67 @@ arcY2 = 600
 arcY3 = 1200
 arcY4 = 1200
 
-#arc 1, 2 +10 / arc 2, 3 -582 / arc 3, 4 +12
+arcXpos = screenX
+
+arcW1 = screenY
+arcW2 = screenY
+arcW3 = screenY
+arcW4 = screenY
+
+going = True
 
 pygame.init()
 size = width, height = screenX, screenY
 screen = pygame.display.set_mode(size)
 
-while 1:
+key_pressed = True
+
+while going:
+    # Handle Input Events
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                going = False
+        
+            elif event.key == pygame.K_UP and key_pressed:
+                speed += 0.01
+                key_pressed = False
+
+            elif event.key == pygame.K_DOWN and key_pressed:
+                if speed > 0:
+                    speed -= 0.01
+                    key_pressed = False
+
+            elif event.key == pygame.K_RIGHT and key_pressed:
+                arcW1 += 10
+                arcW2 += 10
+                arcW3 += 10
+                arcW4 += 10
+
+                arcXpos -= 27
+                
+                key_pressed = False
+
+            elif event.key == pygame.K_LEFT and key_pressed:
+                arcW1 -= 10
+                arcW2 -= 10
+                arcW3 -= 10
+                arcW4 -= 10
+
+                arcXpos += 27
+                
+                key_pressed = False
+
+        if event.type == pygame.KEYUP:
+            key_pressed = True
 
 
     screen.fill((0,0,0))
   
-    pygame.draw.arc(screen, (255, 0, 0), (screenX/5, arcY1, screenY-80, screenY+20), pi, 3*pi/2, 20)
-    pygame.draw.arc(screen, (0, 255, 0), (screenX/5, arcY2, screenY-100, screenY+50), pi/2, pi, 20)
-    pygame.draw.arc(screen, (0, 0, 255), (screenX/5, arcY3, screenY-100, screenY+20), 3*pi/2, 2*pi, 20)
-    pygame.draw.arc(screen, (255, 165, 0), (screenX/5, arcY4, screenY-100, screenY+50), 0, pi/2, 20)
+    pygame.draw.arc(screen, (255, 0, 0), (arcXpos/5, arcY1, arcW1-80, screenY+20), pi, 3*pi/2, 20)
+    pygame.draw.arc(screen, (0, 255, 0), (arcXpos/5, arcY2, arcW2-100, screenY+50), pi/2, pi, 20)
+    pygame.draw.arc(screen, (0, 0, 255), (arcXpos/5, arcY3, arcW3-100, screenY+20), 3*pi/2, 2*pi, 20)
+    pygame.draw.arc(screen, (255, 165, 0), (arcXpos/5, arcY4, arcW4-100, screenY+50), 0, pi/2, 20)
 
     arcY1 -= speed
     arcY2 -= speed
@@ -52,3 +95,4 @@ while 1:
         arcY4 = 600
 
     pygame.display.flip()
+pygame.quit()
